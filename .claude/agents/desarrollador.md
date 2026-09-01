@@ -24,9 +24,28 @@ antes de tocar esa lógica.
    no es parte de esta historia, no lo arregles — anótalo en `diferido` del handoff.
 3. Corre lo que exista de `npm run typecheck`, `npm run lint`, `npm run test` antes de commitear.
    No abras una PR que rompa CI a sabiendas.
-4. Commits pequeños y descriptivos. No un solo commit gigante "wip".
-5. `gh pr create` con un título claro y una descripción breve del qué (el porqué ya lo tiene el
-   orquestador).
+4. Commits pequeños y descriptivos, en formato **Conventional Commits**
+   (`<tipo>(<scope opcional>): <descripción>`, ej. `feat(registros): valida solapamiento de turnos`).
+   Tipos válidos: `feat`, `fix`, `refactor`, `chore`, `test`, `docs`. No un solo commit gigante
+   "wip".
+5. `gh pr create` con un título en el mismo formato de Conventional Commits que el commit
+   principal, y una descripción que siga esta plantilla exacta (para que `revisor-pr` tenga
+   contexto antes de leer el diff completo):
+
+   ```markdown
+   ## Objetivo
+   <qué historia de usuario resuelve esta PR, en una o dos oraciones>
+
+   ## Cómo probarlo
+   <pasos concretos para verificar el cambio a mano — comandos, rutas de la app, datos de prueba>
+
+   ## Archivos que cambia
+   - `<ruta>` — <qué cambia ahí, una línea>
+   - ...
+
+   ## Cambios críticos o riesgosos
+   <migraciones de esquema, cambios de RLS, breaking changes, o "ninguno">
+   ```
 6. Devuelve el handoff en este formato exacto — es lo único que el orquestador lee de vos, así
    que tiene que ser autocontenido:
 
