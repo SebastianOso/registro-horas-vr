@@ -114,9 +114,17 @@ as $$
 $$;
 
 /**
- * Impide que un usuario sin rol coordinador cambie su propio rol o estado
- * activo. Necesaria porque una política RLS de UPDATE por sí sola no puede
- * restringir qué columnas cambian dentro de la misma fila.
+ * Impide que un usuario sin rol coordinador cambie rol, activo, matrícula
+ * o correo de un profile — son identificadores institucionales, no datos
+ * que el propio becario deba poder autoeditarse. Necesaria porque una
+ * política RLS de UPDATE por sí sola no puede restringir qué columnas
+ * cambian dentro de la misma fila.
+ *
+ * El chequeo solo aplica cuando hay un usuario autenticado (auth.uid() no
+ * nulo): los triggers, a diferencia de RLS, se disparan también para la
+ * llave secret/service role y para SQL directo desde el dashboard, donde
+ * auth.uid() es null. Exigir es_coordinador() ahí bloquearía promociones o
+ * reactivaciones legítimas hechas fuera de una sesión de usuario.
  */
 create or replace function public.proteger_campos_privilegiados_profile()
 returns trigger
@@ -125,10 +133,13 @@ security definer
 set search_path = public
 as $$
 begin
-  if not public.es_coordinador()
+  if (select auth.uid()) is not null
+      and not public.es_coordinador()
       and (new.rol is distinct from old.rol
-        or new.activo is distinct from old.activo) then
-    raise exception 'Solo un coordinador puede cambiar rol o activo de un profile';
+        or new.activo is distinct from old.activo
+        or new.matricula is distinct from old.matricula
+        or new.correo is distinct from old.correo) then
+    raise exception 'Solo un coordinador puede cambiar rol, activo, matrícula o correo de un profile';
   end if;
   return new;
 end;
