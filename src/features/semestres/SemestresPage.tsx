@@ -123,27 +123,27 @@ export function SemestresPage() {
               {semestres.map((semestre: Semestre) => (
                 <div key={semestre.id} className="flex items-center justify-between gap-3 px-6 py-3.5">
                   <div>
-                    <div className="text-sm font-medium text-ink">{semestre.nombre}</div>
-                    <div className="text-xs text-muted">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-ink">{semestre.nombre}</span>
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                          semestre.activo ? 'bg-success/15 text-success' : 'bg-muted/15 text-muted'
+                        }`}
+                      >
+                        {semestre.activo ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 text-xs text-muted">
                       {semestre.fecha_inicio} – {semestre.fecha_fin}
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-1.5">
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        semestre.activo ? 'bg-success/15 text-success' : 'bg-muted/15 text-muted'
-                      }`}
-                    >
-                      {semestre.activo ? 'Activo' : 'Inactivo'}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleActivo(semestre)}
-                      className="rounded-card border border-muted/30 px-3 py-1 text-xs font-medium text-ink/80 hover:bg-canvas"
-                    >
-                      {semestre.activo ? 'Desactivar' : 'Activar'}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleActivo(semestre)}
+                    className="shrink-0 rounded-card border border-muted/30 px-3 py-1 text-xs font-medium text-ink/80 hover:bg-canvas"
+                  >
+                    {semestre.activo ? 'Desactivar' : 'Activar'}
+                  </button>
                 </div>
               ))}
             </div>
