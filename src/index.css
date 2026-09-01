@@ -13,11 +13,13 @@
   --color-accent-500: #f97316;
   --color-accent-600: #ea580c;
 
+  --color-canvas: #eff6ff;
   --color-surface: #ffffff;
   --color-ink: #0f172a;
   --color-muted: #64748b;
   --color-danger: #dc2626;
   --color-success: #16a34a;
+  --color-on-brand: #ffffff;
 
   --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
@@ -28,6 +30,6 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: var(--color-surface);
+  background: var(--color-canvas);
   color: var(--color-ink);
 }
