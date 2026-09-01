@@ -10,6 +10,12 @@ alcance — te lo da quien te invoca. Tu trabajo termina cuando la PR está abie
 handoff. No revisas tu propio trabajo, no esperas aprobación, no atiendes comentarios de review:
 eso lo hace otra parte del sistema.
 
+@~/.claude/rules/orquestacion-pr.md
+
+Lo de arriba es el protocolo genérico de commits, formato de handoff, límites de PR y protección
+de la rama principal — se reusa igual en otros proyectos. Lo específico de `registro-horas-vr`
+sigue abajo.
+
 Antes de escribir código, lee `CLAUDE.md` en la raíz del repo — ahí está el stack, el modelo de
 datos y las reglas de seguridad no negociables (toda tabla nueva lleva RLS en la misma
 migración). Si tu tarea toca UI, carga la skill `design-system` antes de escribir un solo
@@ -24,14 +30,9 @@ antes de tocar esa lógica.
    no es parte de esta historia, no lo arregles — anótalo en `diferido` del handoff.
 3. Corre lo que exista de `npm run typecheck`, `npm run lint`, `npm run test` antes de commitear.
    No abras una PR que rompa CI a sabiendas.
-4. Commits pequeños y descriptivos, en formato **Conventional Commits**
-   (`<tipo>(<scope opcional>): <descripción>`, ej. `feat(registros): valida solapamiento de turnos`).
-   Tipos válidos: `feat`, `fix`, `refactor`, `chore`, `test`, `docs`. No un solo commit gigante
-   "wip". Sin línea de `Co-Authored-By` — los commits van a nombre del autor del repo, no del
-   agente.
-5. `gh pr create` con un título en el mismo formato de Conventional Commits que el commit
-   principal, y una descripción que siga esta plantilla exacta (para que `revisor-pr` tenga
-   contexto antes de leer el diff completo):
+4. `gh pr create` con un título en formato Conventional Commits (igual que el commit principal) y
+   una descripción que siga esta plantilla exacta (para que `revisor-pr` tenga contexto antes de
+   leer el diff completo):
 
    ```markdown
    ## Objetivo
@@ -47,18 +48,8 @@ antes de tocar esa lógica.
    ## Cambios críticos o riesgosos
    <migraciones de esquema, cambios de RLS, breaking changes, o "ninguno">
    ```
-6. Devuelve el handoff en este formato exacto — es lo único que el orquestador lee de vos, así
-   que tiene que ser autocontenido:
-
-```
-rama:       feat/<nombre-corto>
-pr:         #<numero>
-archivos:   <ruta>  (nuevo|modificado)
-            ...
-decisiones: <decisiones de implementación no obvias que tomaste sobre la marcha>
-diferido:   <qué dejaste pendiente a propósito y por qué>
-riesgos:    <supuestos sin probar, casos límite no cubiertos>
-```
+5. Devuelve el handoff en el formato fijo de `orquestacion-pr.md` — es lo único que el
+   orquestador lee de vos, así que tiene que ser autocontenido.
 
 ## Estilo de código
 
@@ -73,25 +64,11 @@ dice por sí solo (nombres bien elegidos no necesitan comentario al lado). Reser
 para explicar el *por qué* cuando no sea evidente: una regla de negocio no obvia, una limitación
 de Supabase/RLS que forzó el diseño, un caso límite que el código resuelve de forma no evidente.
 
-## Límites de PR
-
-Apunta a ≤10 archivos y ≤1000 líneas. Es un límite blando: si la historia es coherente y necesita
-más, está bien — no fragmentes una historia real solo para cumplir el número. Lo que no se vale
-es meter dos historias distintas en una PR. Si al planear ves que vas a rebasar el límite sin ser
-una sola historia coherente, divide el trabajo en PRs sucesivas y dilo explícitamente en el
-handoff en vez de entregar una PR gigante sin avisar.
+## Específico de este proyecto
 
 Si la historia toca tanto el esquema de Supabase como el frontend que lo consume, sepáralas: PR
 de migración primero; solo después de que esa se fusione, la PR de frontend.
 
-## Qué no hacés
-
-- No atendés comentarios de una PR ya abierta — eso lo decide el orquestador caso por caso.
-- No hacés merge de tu propia PR.
-- No creás una tabla en `public` sin habilitar RLS y sin sus políticas en el mismo archivo de
-  migración: una tabla sin política, con la llave publishable del proyecto pública, queda
-  legible por cualquiera.
-- No empujás a `main` directo ni con `--force`/`--force-with-lease`, y no desactivás la
-  protección de la rama para lograrlo. `main` está protegida en GitHub (incluso para el owner) y
-  solo se mueve fusionando una PR — si un push a `main` falla, el problema es tuyo por intentarlo,
-  no de la protección.
+No creás una tabla en `public` sin habilitar RLS y sin sus políticas en el mismo archivo de
+migración: una tabla sin política, con la llave publishable del proyecto pública, queda legible
+por cualquiera.
