@@ -114,32 +114,21 @@ export function SemestresPage() {
       </div>
 
       <div className="overflow-hidden rounded-card bg-surface shadow-card">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse">
-            <thead>
-              <tr className="border-b border-muted/15">
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                  Nombre
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                  Inicio
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                  Fin
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                  Estado
-                </th>
-                <th className="px-6 py-3" />
-              </tr>
-            </thead>
-            <tbody>
+        {!loading && semestres.length === 0 ? (
+          <p className="px-6 py-8 text-center text-sm text-muted">Todavía no hay semestres.</p>
+        ) : (
+          <>
+            {/* Mobile: tarjetas apiladas — la tabla de 5 columnas no cabe sin scroll horizontal. */}
+            <div className="divide-y divide-muted/10 md:hidden">
               {semestres.map((semestre: Semestre) => (
-                <tr key={semestre.id} className="border-b border-muted/10 last:border-0">
-                  <td className="px-6 py-3.5 text-sm font-medium text-ink">{semestre.nombre}</td>
-                  <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_inicio}</td>
-                  <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_fin}</td>
-                  <td className="px-6 py-3.5">
+                <div key={semestre.id} className="flex items-center justify-between gap-3 px-6 py-3.5">
+                  <div>
+                    <div className="text-sm font-medium text-ink">{semestre.nombre}</div>
+                    <div className="text-xs text-muted">
+                      {semestre.fecha_inicio} – {semestre.fecha_fin}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1.5">
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                         semestre.activo ? 'bg-success/15 text-success' : 'bg-muted/15 text-muted'
@@ -147,28 +136,66 @@ export function SemestresPage() {
                     >
                       {semestre.activo ? 'Activo' : 'Inactivo'}
                     </span>
-                  </td>
-                  <td className="px-6 py-3.5 text-right">
                     <button
                       type="button"
                       onClick={() => toggleActivo(semestre)}
-                      className="rounded-card border border-muted/30 px-3 py-1.5 text-xs font-medium text-ink/80 hover:bg-canvas"
+                      className="rounded-card border border-muted/30 px-3 py-1 text-xs font-medium text-ink/80 hover:bg-canvas"
                     >
                       {semestre.activo ? 'Desactivar' : 'Activar'}
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-              {!loading && semestres.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-muted">
-                    Todavía no hay semestres.
-                  </td>
+            </div>
+
+            <table className="hidden w-full border-collapse md:table">
+              <thead>
+                <tr className="border-b border-muted/15">
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    Nombre
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    Inicio
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    Fin
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    Estado
+                  </th>
+                  <th className="px-6 py-3" />
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {semestres.map((semestre: Semestre) => (
+                  <tr key={semestre.id} className="border-b border-muted/10 last:border-0">
+                    <td className="px-6 py-3.5 text-sm font-medium text-ink">{semestre.nombre}</td>
+                    <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_inicio}</td>
+                    <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_fin}</td>
+                    <td className="px-6 py-3.5">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                          semestre.activo ? 'bg-success/15 text-success' : 'bg-muted/15 text-muted'
+                        }`}
+                      >
+                        {semestre.activo ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-3.5 text-right">
+                      <button
+                        type="button"
+                        onClick={() => toggleActivo(semestre)}
+                        className="rounded-card border border-muted/30 px-3 py-1.5 text-xs font-medium text-ink/80 hover:bg-canvas"
+                      >
+                        {semestre.activo ? 'Desactivar' : 'Activar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
       {error && (
         <p role="alert" className="mt-3 text-sm text-danger">

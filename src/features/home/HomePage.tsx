@@ -70,45 +70,61 @@ export function HomePage({ nombre, becarioId }: HomePageProps) {
             <div className="border-b border-muted/10 px-6 py-4 text-[15px] font-semibold text-ink">
               Últimos turnos
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[480px] border-collapse">
-                <thead>
-                  <tr className="border-b border-muted/15">
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                      Fecha
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                      Entrada
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                      Salida
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-muted">
-                      Horas
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+            {registros.length === 0 ? (
+              <p className="px-6 py-8 text-center text-sm text-muted">
+                Todavía no registraste ningún turno.
+              </p>
+            ) : (
+              <>
+                {/* Mobile: tarjetas apiladas — una tabla de 4 columnas no cabe sin scroll horizontal. */}
+                <div className="divide-y divide-muted/10 md:hidden">
                   {registros.map((registro) => (
-                    <tr key={registro.id} className="border-b border-muted/10 last:border-0">
-                      <td className="px-6 py-3.5 text-sm text-ink">{registro.fecha}</td>
-                      <td className="px-6 py-3.5 text-sm text-muted">{registro.hora_inicio}</td>
-                      <td className="px-6 py-3.5 text-sm text-muted">{registro.hora_fin}</td>
-                      <td className="px-6 py-3.5 text-right text-sm text-muted">
+                    <div key={registro.id} className="flex items-center justify-between px-6 py-3.5">
+                      <div>
+                        <div className="text-sm font-medium text-ink">{registro.fecha}</div>
+                        <div className="text-xs text-muted">
+                          {registro.hora_inicio} – {registro.hora_fin}
+                        </div>
+                      </div>
+                      <div className="text-sm font-semibold text-ink">
                         {registro.minutos != null ? (registro.minutos / 60).toFixed(1) : '—'} h
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   ))}
-                  {registros.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="px-6 py-8 text-center text-sm text-muted">
-                        Todavía no registraste ningún turno.
-                      </td>
+                </div>
+
+                <table className="hidden w-full border-collapse md:table">
+                  <thead>
+                    <tr className="border-b border-muted/15">
+                      <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                        Fecha
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                        Entrada
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                        Salida
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-muted">
+                        Horas
+                      </th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {registros.map((registro) => (
+                      <tr key={registro.id} className="border-b border-muted/10 last:border-0">
+                        <td className="px-6 py-3.5 text-sm text-ink">{registro.fecha}</td>
+                        <td className="px-6 py-3.5 text-sm text-muted">{registro.hora_inicio}</td>
+                        <td className="px-6 py-3.5 text-sm text-muted">{registro.hora_fin}</td>
+                        <td className="px-6 py-3.5 text-right text-sm text-muted">
+                          {registro.minutos != null ? (registro.minutos / 60).toFixed(1) : '—'} h
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
           </div>
         </>
       )}

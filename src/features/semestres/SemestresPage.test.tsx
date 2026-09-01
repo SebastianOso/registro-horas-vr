@@ -32,13 +32,13 @@ describe('SemestresPage', () => {
   it('lista los semestres existentes', async () => {
     render(<SemestresPage />)
 
-    expect(await screen.findByText('2026-1')).toBeInTheDocument()
-    expect(screen.getByText('Activo')).toBeInTheDocument()
+    expect(await screen.findAllByText('2026-1')).not.toHaveLength(0)
+    expect(screen.getAllByText('Activo').length).toBeGreaterThan(0)
   })
 
   it('rechaza si la fecha de fin no es posterior a la de inicio', async () => {
     render(<SemestresPage />)
-    await screen.findByText('2026-1')
+    await screen.findAllByText('2026-1')
 
     fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: '2026-2' } })
     fireEvent.change(screen.getByLabelText('Fecha inicio'), { target: { value: '2026-07-01' } })
@@ -54,7 +54,7 @@ describe('SemestresPage', () => {
 
   it('crea un semestre con datos válidos', async () => {
     render(<SemestresPage />)
-    await screen.findByText('2026-1')
+    await screen.findAllByText('2026-1')
 
     fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: '2026-2' } })
     fireEvent.change(screen.getByLabelText('Fecha inicio'), { target: { value: '2026-07-01' } })
