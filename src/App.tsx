@@ -1,11 +1,27 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { LoginPage } from './features/auth/LoginPage'
+import { useSession } from './features/auth/useSession'
+import { HomePage } from './features/home/HomePage'
+
 function App() {
+  const { session, loading } = useSession()
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-surface">
+        <p className="text-muted">Cargando...</p>
+      </main>
+    )
+  }
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface">
-      <div className="rounded-card bg-surface p-8 text-center shadow-card">
-        <h1 className="text-2xl font-semibold text-ink">registro-horas-vr</h1>
-        <p className="mt-2 text-muted">Andamiaje del proyecto listo.</p>
-      </div>
-    </main>
+    <Routes>
+      <Route path="/login" element={session ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route
+        path="/"
+        element={session ? <HomePage session={session} /> : <Navigate to="/login" replace />}
+      />
+    </Routes>
   )
 }
 
