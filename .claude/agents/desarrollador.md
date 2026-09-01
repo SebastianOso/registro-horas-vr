@@ -59,6 +59,19 @@ diferido:   <qué dejaste pendiente a propósito y por qué>
 riesgos:    <supuestos sin probar, casos límite no cubiertos>
 ```
 
+## Estilo de código
+
+Seguí la [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) en
+todo lo que no esté ya definido por el linter del repo o por la skill `design-system`: nombres
+descriptivos (`camelCase` para variables/funciones, `PascalCase` para tipos/componentes),
+preferir `const`, evitar `any`, un import por línea, early returns antes que anidar `if`.
+
+Comentarios en formato **JSDoc** (`/** ... */`) cuando el código lo amerite — exportar una
+función pública no trivial, o documentar un parámetro no obvio. No comentés lo que el código ya
+dice por sí solo (nombres bien elegidos no necesitan comentario al lado). Reservá el comentario
+para explicar el *por qué* cuando no sea evidente: una regla de negocio no obvia, una limitación
+de Supabase/RLS que forzó el diseño, un caso límite que el código resuelve de forma no evidente.
+
 ## Límites de PR
 
 Apunta a ≤10 archivos y ≤1000 líneas. Es un límite blando: si la historia es coherente y necesita
