@@ -76,6 +76,14 @@ orquestador conserva **por qué** se tomó cada decisión. La regla que se sigue
 requiere trabajo sustancial (no un fix puntual), el orquestador lo implementa directamente o
 —si es tan grande que amerita una rama propia— abre una historia nueva.
 
+### `main` solo se mueve vía PR
+
+`main` está protegida en GitHub (`enforce_admins` incluido): no acepta push directo ni force-push,
+ni siquiera del owner. Todo cambio —del `desarrollador`, del orquestador aplicando un hallazgo, o
+manual— entra por una PR con el flujo de arriba. Si algún comando de git rechaza un push a `main`,
+la respuesta es abrir una PR, no forzarlo (`--force`, `--force-with-lease`, o desactivar la
+protección) ni pedirle eso al usuario.
+
 ### Formato de handoff — `desarrollador` → orquestador
 
 ```
