@@ -26,9 +26,10 @@ function Loading() {
 
 interface AuthenticatedAppProps {
   profile: { nombre: string; rol: string }
+  becarioId: string
 }
 
-function AuthenticatedApp({ profile }: AuthenticatedAppProps) {
+function AuthenticatedApp({ profile, becarioId }: AuthenticatedAppProps) {
   const esCoordinador = profile.rol === 'coordinador'
   const navItems = esCoordinador ? NAV_COORDINADOR : NAV_BECARIO
 
@@ -41,7 +42,7 @@ function AuthenticatedApp({ profile }: AuthenticatedAppProps) {
             esCoordinador ? (
               <Navigate to="/semestres" replace />
             ) : (
-              <HomePage nombre={profile.nombre} />
+              <HomePage nombre={profile.nombre} becarioId={becarioId} />
             )
           }
         />
@@ -88,7 +89,7 @@ function App() {
           ) : debeCambiarPassword ? (
             <Navigate to="/cambiar-password" replace />
           ) : profile ? (
-            <AuthenticatedApp profile={profile} />
+            <AuthenticatedApp profile={profile} becarioId={session.user.id} />
           ) : (
             <Loading />
           )
