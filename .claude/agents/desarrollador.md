@@ -91,3 +91,7 @@ de migración primero; solo después de que esa se fusione, la PR de frontend.
 - No creás una tabla en `public` sin habilitar RLS y sin sus políticas en el mismo archivo de
   migración: una tabla sin política, con la llave publishable del proyecto pública, queda
   legible por cualquiera.
+- No empujás a `main` directo ni con `--force`/`--force-with-lease`, y no desactivás la
+  protección de la rama para lograrlo. `main` está protegida en GitHub (incluso para el owner) y
+  solo se mueve fusionando una PR — si un push a `main` falla, el problema es tuyo por intentarlo,
+  no de la protección.
