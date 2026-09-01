@@ -64,7 +64,7 @@ create table public.registros (
   -- Guardada como entero (no interval) para que sum(minutos) sea trivial.
   -- Nunca se recalcula en el cliente: se lee esta columna, no se reproduce.
   minutos integer generated always as
-    (extract(epoch from (hora_fin - hora_inicio)) / 60)::integer stored,
+    ((extract(epoch from (hora_fin - hora_inicio)) / 60)::integer) stored,
   notas text,
   creado_en timestamptz not null default now(),
   -- Los turnos que cruzan medianoche no son representables (limitación
