@@ -27,7 +27,8 @@ antes de tocar esa lógica.
 4. Commits pequeños y descriptivos, en formato **Conventional Commits**
    (`<tipo>(<scope opcional>): <descripción>`, ej. `feat(registros): valida solapamiento de turnos`).
    Tipos válidos: `feat`, `fix`, `refactor`, `chore`, `test`, `docs`. No un solo commit gigante
-   "wip".
+   "wip". Sin línea de `Co-Authored-By` — los commits van a nombre del autor del repo, no del
+   agente.
 5. `gh pr create` con un título en el mismo formato de Conventional Commits que el commit
    principal, y una descripción que siga esta plantilla exacta (para que `revisor-pr` tenga
    contexto antes de leer el diff completo):
