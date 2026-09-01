@@ -8,7 +8,7 @@ function App() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-surface">
+      <main className="flex min-h-screen items-center justify-center bg-canvas">
         <p className="text-muted">Cargando...</p>
       </main>
     )

@@ -5,7 +5,7 @@ export function LoginPage() {
   const navigate = useNavigate()
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface">
+    <main className="flex min-h-screen items-center justify-center bg-canvas">
       <LoginForm onSuccess={() => navigate('/', { replace: true })} />
     </main>
   )
