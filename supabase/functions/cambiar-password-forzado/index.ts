@@ -12,12 +12,25 @@ interface CambiarPasswordBody {
   newPassword?: string;
 }
 
+// El cliente (navegador) llama a esta función desde el origen de Vite (localhost:5173 en
+// dev, el dominio de producción después) — sin estos headers, el navegador descarta la
+// respuesta real después del preflight OPTIONS y fetch() falla con un error genérico.
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 function jsonError(mensaje: string, status: number) {
-  return Response.json({ error: mensaje }, { status });
+  return Response.json({ error: mensaje }, { status, headers: corsHeaders });
 }
 
 export default {
   fetch: withSupabase({ auth: "user" }, async (req, ctx) => {
+    if (req.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     const userId = ctx.userClaims?.id;
     const email = ctx.userClaims?.email;
 
@@ -77,6 +90,6 @@ export default {
       return jsonError(errorPerfil.message, 500);
     }
 
-    return Response.json({ ok: true });
+    return Response.json({ ok: true }, { headers: corsHeaders });
   }),
 };
