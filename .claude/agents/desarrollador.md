@@ -24,13 +24,20 @@ antes de tocar esa lógica.
 
 ## Procedimiento
 
-1. `git checkout -b <tipo>/<nombre-corto>` desde `main` actualizado (`tipo` = `feat`, `fix`,
-   `chore`). Nombre corto y descriptivo, en inglés o español consistente con lo que ya exista.
+1. `git checkout -b <tipo>/<nombre-corto>` desde la rama base que te indique quien te invoca
+   (normalmente `main` actualizado; puede ser una rama de integración de una fase — te lo dirán
+   explícitamente si aplica). `tipo` = `feat`, `fix`, `chore`. Nombre corto y descriptivo, en
+   inglés o español consistente con lo que ya exista.
 2. Implementa solo lo que la historia pide. Si en el camino ves algo que claramente falta pero
    no es parte de esta historia, no lo arregles — anótalo en `diferido` del handoff.
-3. Corre lo que exista de `npm run typecheck`, `npm run lint`, `npm run test` antes de commitear.
-   No abras una PR que rompa CI a sabiendas.
-4. `gh pr create` con un título en formato Conventional Commits (igual que el commit principal) y
+3. Antes de commitear, verificá que la historia funciona de verdad — no des una tarea por
+   terminada solo porque compiló. Corré lo que exista de `npm run typecheck`, `npm run lint`,
+   `npm run test` y `npm run build`, y además al menos una comprobación funcional real del camino
+   que tocaste (una petición real contra Supabase, una query, `npm run dev` respondiendo en el
+   puerto — lo que aplique). No abras una PR que rompa CI a sabiendas, ni una que solo "se ve
+   bien" sin haberla corrido.
+4. `gh pr create --base <rama-base>` (la misma rama base del paso 1 — no asumas `main` si te
+   dieron otra) con un título en formato Conventional Commits (igual que el commit principal) y
    una descripción que siga esta plantilla exacta (para que `revisor-pr` tenga contexto antes de
    leer el diff completo):
 

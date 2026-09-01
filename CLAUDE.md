@@ -67,9 +67,17 @@ handoff/reporte, límites de PR) — se reusa igual en otros proyectos. Lo espec
 ## Comandos
 
 ```
-npm run dev         # Vite dev server
-npm run build        # build de producción
-npm run test         # Vitest
-npm run typecheck    # tsc --noEmit
-npx supabase db push # aplica migraciones pendientes al proyecto remoto
+npm run dev          # Vite dev server
+npm run build         # build de producción
+npm run test          # Vitest
+npm run typecheck     # tsc --noEmit
+npm run lint           # eslint
+npx supabase db push  # aplica migraciones pendientes al proyecto remoto
+npx supabase db query --linked  # corre SQL (por stdin) contra el proyecto remoto, útil para
+                                 # probar RLS con distintos JWT sin pasar por la UI
 ```
+
+Antes de dar una historia por terminada, además de que estos comandos pasen: correr al menos una
+verificación funcional real del camino que se tocó (una petición contra la API de Supabase, una
+query, `npm run dev` respondiendo) — no basta con que compile. Detalle del porqué en
+`~/.claude/rules/orquestacion-pr.md`.
