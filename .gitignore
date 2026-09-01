@@ -1,8 +1,11 @@
 node_modules/
 dist/
+dist-ssr/
 .env
 .env.local
 *.local
+logs
+*.log
 
 # Supabase CLI
 supabase/.temp/
