@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.local
+*.local
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
