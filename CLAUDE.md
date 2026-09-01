@@ -45,78 +45,15 @@ inscripción. Antes de tocar este modelo, carga la skill `dominio-horas`.
 
 Este proyecto se desarrolla con un flujo de agentes contra GitHub, coordinado desde la
 conversación principal (el **orquestador** — vos, Claude, leyendo esto en la sesión principal).
-La razón de este protocolo: cada subagente arranca con contexto vacío, así que solo el
-orquestador conserva **por qué** se tomó cada decisión. La regla que se sigue de eso:
 
-> **El orquestador conserva la intención y delega el detalle.** No lee archivos completos para
-> revisar un hallazgo, no le pide a un subagente que le narre lo que hizo: cada subagente
-> devuelve un reporte de forma fija (abajo) y el orquestador actúa sobre ese reporte.
+@~/.claude/rules/orquestacion-pr.md
 
-### Flujo
+Lo de arriba es el protocolo genérico (flujo, triaje, protección de `main`, commits, formatos de
+handoff/reporte, límites de PR) — se reusa igual en otros proyectos. Lo específico de
+`registro-horas-vr` es:
 
-1. El orquestador (vos) decide qué construir y con qué alcance (una historia de usuario).
-2. Se invoca al agente **`desarrollador`**: crea rama, implementa, hace commit, abre PR, y
-   **devuelve el handoff de desarrollo** (formato abajo). No hace nada más — no espera revisión,
-   no itera sobre hallazgos.
-3. El orquestador invoca al agente **`revisor-pr`** sobre esa PR. Este agente **no tiene
-   permiso de escritura** — solo lee y reporta. Devuelve una lista de hallazgos y un veredicto
-   (formato abajo).
-4. El orquestador hace el **triaje** de cada hallazgo — esto lo hace el orquestador mismo, nunca
-   un subagente, porque requiere la intención original:
-   - **Aplicar**: el hallazgo es mecánico y no contradice ninguna decisión ya tomada → el
-     orquestador edita directamente el hunk señalado (no relee el archivo completo).
-   - **Rechazar**: el hallazgo choca con un tradeoff que se aceptó a propósito → el orquestador
-     responde en la PR explicando por qué se descarta.
-   - **Escalar**: el hallazgo revela una decisión de diseño que no se había tomado → el
-     orquestador te pregunta a vos.
-5. Si hubo cambios aplicados, se re-invoca `revisor-pr` sobre el diff actualizado. Cuando el
-   veredicto es limpio, se hace merge.
-
-**Nunca se reinvoca al `desarrollador` para atender hallazgos de revisión.** Si un hallazgo
-requiere trabajo sustancial (no un fix puntual), el orquestador lo implementa directamente o
-—si es tan grande que amerita una rama propia— abre una historia nueva.
-
-### `main` solo se mueve vía PR
-
-`main` está protegida en GitHub (`enforce_admins` incluido): no acepta push directo ni force-push,
-ni siquiera del owner. Todo cambio —del `desarrollador`, del orquestador aplicando un hallazgo, o
-manual— entra por una PR con el flujo de arriba. Si algún comando de git rechaza un push a `main`,
-la respuesta es abrir una PR, no forzarlo (`--force`, `--force-with-lease`, o desactivar la
-protección) ni pedirle eso al usuario.
-
-### Formato de handoff — `desarrollador` → orquestador
-
-```
-rama:       feat/<nombre-corto>
-pr:         #<numero>
-archivos:   <ruta>  (nuevo|modificado)
-            ...
-decisiones: <decisiones de implementación no obvias tomadas sobre la marcha>
-diferido:   <qué se dejó pendiente a propósito y por qué>
-riesgos:    <supuestos sin probar, casos límite no cubiertos>
-```
-
-### Formato de reporte — `revisor-pr` → orquestador
-
-```
-hallazgos:
-  - archivo: <ruta>
-    linea:   <numero>
-    grave:   alta|media|baja
-    claim:   <qué está mal, en una oración>
-    fix:     <qué cambiar>
-veredicto: limpio|cambios-requeridos
-```
-
-## Disciplina de PRs
-
-- Objetivo blando: **≤10 archivos y ≤1000 líneas** por PR. Si una historia de usuario coherente
-  necesita más, está bien — la coherencia de la historia manda sobre el número. Lo que no se
-  vale es empacar dos historias distintas en una PR para ahorrar trámite.
 - **Esquema y frontend van en PRs separadas.** Primero la migración de Supabase (tablas + RLS),
   ya fusionada, la PR de UI que la consume.
-- Si al planear una tarea el `desarrollador` anticipa que rebasará estos límites sin ser una
-  sola historia coherente, debe partirla y reportarlo en vez de entregar una PR gigante.
 
 ## Skills del proyecto
 
