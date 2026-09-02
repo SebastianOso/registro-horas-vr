@@ -9,3 +9,9 @@ entrypoint = "./functions/cambiar-password-forzado/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/cambiar-password-forzado/*.html" ]
+
+[functions.cargar-becarios]
+enabled = true
+verify_jwt = false
+import_map = "./functions/cargar-becarios/deno.json"
+entrypoint = "./functions/cargar-becarios/index.ts"

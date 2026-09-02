@@ -59,3 +59,14 @@ export function PlusIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+export function UsersIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3 20a6 6 0 0 1 12 0" />
+      <path d="M16 5.5a3 3 0 0 1 0 5.8" />
+      <path d="M18.5 20a5.5 5.5 0 0 0-3.2-5" />
+    </svg>
+  )
+}
