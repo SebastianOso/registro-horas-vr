@@ -1,15 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
-import { CalendarIcon, HomeIcon } from './components/icons'
+import { CalendarIcon, HomeIcon, UsersIcon } from './components/icons'
 import { ChangePasswordPage } from './features/auth/ChangePasswordPage'
 import { LoginPage } from './features/auth/LoginPage'
 import { useProfile } from './features/auth/useProfile'
 import { useSession } from './features/auth/useSession'
+import { CargarBecariosPage } from './features/becarios/CargarBecariosPage'
 import { HomePage } from './features/home/HomePage'
 import { SemestresPage } from './features/semestres/SemestresPage'
 
 const NAV_COORDINADOR = [
   { to: '/semestres', label: 'Semestres', icon: <CalendarIcon className="h-[18px] w-[18px]" /> },
+  { to: '/becarios', label: 'Becarios', icon: <UsersIcon className="h-[18px] w-[18px]" /> },
 ]
 
 const NAV_BECARIO = [
@@ -49,6 +51,10 @@ function AuthenticatedApp({ profile, becarioId }: AuthenticatedAppProps) {
         <Route
           path="/semestres"
           element={esCoordinador ? <SemestresPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/becarios"
+          element={esCoordinador ? <CargarBecariosPage /> : <Navigate to="/" replace />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
