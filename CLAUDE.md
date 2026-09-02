@@ -21,8 +21,15 @@ aplica aquí.
 
 `semestres`, `profiles`, `inscripciones`, `registros`. La relación que sostiene el esquema:
 **las horas cuelgan de `inscripcion_id`, no de `becario_id`**, porque un becario puede repetir
-semestre y sus horas de cada periodo no deben mezclarse. La meta de horas también vive en la
-inscripción. Antes de tocar este modelo, carga la skill `dominio-horas`.
+semestre y sus horas de cada periodo no deben mezclarse.
+
+La **meta de horas vive en `semestres.horas_meta`**: es la misma para todos los becarios del
+periodo. `inscripciones.horas_meta` es un **override opcional nullable** para el caso puntual de
+un becario con carga distinta — `null` significa "usá la del semestre". Para mostrar o comparar
+una meta, leé **`avance_becarios.horas_meta`**, que ya resuelve cuál aplica; nunca
+`inscripciones.horas_meta` directo, porque en el caso normal es `null`.
+
+Antes de tocar este modelo, carga la skill `dominio-horas`.
 
 ## Seguridad — no negociable, repo público
 

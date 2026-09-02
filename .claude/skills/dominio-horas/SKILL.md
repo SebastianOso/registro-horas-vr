@@ -9,10 +9,14 @@ description: Reglas de negocio de turnos, inscripciones y cálculo de avance de 
 
 Un becario puede repetir semestre de servicio. Por eso **las horas cuelgan de
 `inscripcion_id`, nunca directo de `becario_id`.** Una inscripción es la relación entre un
-becario y un semestre concreto (`unique(becario_id, semestre_id)`), y cada inscripción tiene su
-propia `horas_meta`. Si algún código nuevo suma o filtra horas por `becario_id` sin pasar por la
-inscripción, va a mezclar horas de dos periodos distintos del mismo becario — es el bug más caro
-posible en este dominio porque es silencioso: la suma da un número, solo que el número está mal.
+becario y un semestre concreto (`unique(becario_id, semestre_id)`). Si algún código nuevo suma o
+filtra horas por `becario_id` sin pasar por la inscripción, va a mezclar horas de dos periodos
+distintos del mismo becario — es el bug más caro posible en este dominio porque es silencioso:
+la suma da un número, solo que el número está mal.
+
+La **meta** de esa inscripción sale de `semestres.horas_meta` (todos los becarios del periodo
+comparten el mismo objetivo). `inscripciones.horas_meta` existe solo como **override opcional
+nullable**, para el becario con carga distinta al resto: `null` = aplica la del semestre.
 
 ```
 becario ──< inscripciones >── semestre
@@ -37,14 +41,16 @@ becario ──< inscripciones >── semestre
 ## Cálculo de avance
 
 El avance de un becario en un semestre es `sum(minutos) / 60` de sus `registros`, vía
-`inscripcion_id`, contra la `horas_meta` de esa inscripción. Este cálculo debe vivir en **una
-sola vista o función de Postgres** (`avance_becarios` o equivalente) — el frontend la consulta,
-nunca reimplementa el `sum` ni el `join` a mano. Si necesitás un dato derivado nuevo (por
-ejemplo "% completado"), agregalo a esa vista, no calcules el porcentaje de forma distinta en
-cada pantalla que lo muestre.
+`inscripcion_id`, contra la **meta efectiva** del periodo: `coalesce(i.horas_meta,
+s.horas_meta)`. Este cálculo debe vivir en **una sola vista o función de Postgres**
+(`avance_becarios` o equivalente) — el frontend la consulta, nunca reimplementa el `sum`, el
+`join` ni el `coalesce` a mano. Si necesitás un dato derivado nuevo (por ejemplo "% completado"),
+agregalo a esa vista, no calcules el porcentaje de forma distinta en cada pantalla que lo
+muestre.
 
 Campos esperados de esa vista, como mínimo: `inscripcion_id`, `becario_id`, `semestre_id`,
-`minutos_acumulados`, `horas_meta`, `horas_faltantes`, `porcentaje`.
+`minutos_acumulados`, `horas_meta`, `horas_faltantes`, `porcentaje`. El `horas_meta` que expone
+la vista **ya es el efectivo** — el override si existe, si no el del semestre.
 
 ## Qué revisar en una PR
 
@@ -58,3 +64,8 @@ Campos esperados de esa vista, como mínimo: `inscripcion_id`, `becario_id`, `se
    contadas.
 4. ¿Una nueva inscripción olvida el `unique(becario_id, semestre_id)` o permite duplicar la
    inscripción de un becario en el mismo semestre? → hallazgo.
+5. ¿Algún código lee `inscripciones.horas_meta` para mostrar o comparar la meta, en vez de
+   `avance_becarios.horas_meta`? → gravedad alta: en el caso normal esa columna es `null`, así
+   que la pantalla muestra la meta vacía o un avance dividido por null.
+6. ¿Un flujo que crea semestres omite `horas_meta`? La base lo rechaza (`not null` sin default),
+   pero el error llega como un mensaje crudo de Postgres — validalo en el cliente.
