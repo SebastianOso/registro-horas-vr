@@ -9,6 +9,7 @@ export function SemestresPage() {
   const [nombre, setNombre] = useState('')
   const [fechaInicio, setFechaInicio] = useState('')
   const [fechaFin, setFechaFin] = useState('')
+  const [horasMeta, setHorasMeta] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -21,11 +22,18 @@ export function SemestresPage() {
       return
     }
 
+    const meta = Number(horasMeta)
+    if (!Number.isFinite(meta) || meta <= 0) {
+      setFormError('Las horas objetivo deben ser un número mayor a 0.')
+      return
+    }
+
     setSubmitting(true)
     const { error: crearError } = await crear({
       nombre,
       fecha_inicio: fechaInicio,
       fecha_fin: fechaFin,
+      horas_meta: meta,
     })
     setSubmitting(false)
 
@@ -37,6 +45,7 @@ export function SemestresPage() {
     setNombre('')
     setFechaInicio('')
     setFechaFin('')
+    setHorasMeta('')
   }
 
   return (
@@ -53,7 +62,7 @@ export function SemestresPage() {
           Crear semestre
         </div>
         <form
-          className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-5"
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-1.5">
@@ -95,6 +104,21 @@ export function SemestresPage() {
               className="rounded-card border border-muted/30 px-3 py-2 text-sm text-ink outline-none focus:border-brand-500"
             />
           </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="horasMeta" className="text-sm font-medium text-ink">
+              Horas objetivo
+            </label>
+            <input
+              id="horasMeta"
+              type="number"
+              step="0.5"
+              required
+              placeholder="480"
+              value={horasMeta}
+              onChange={(event) => setHorasMeta(event.target.value)}
+              className="rounded-card border border-muted/30 px-3 py-2 text-sm text-ink outline-none focus:border-brand-500"
+            />
+          </div>
           <div className="flex items-end">
             <button
               type="submit"
@@ -118,7 +142,7 @@ export function SemestresPage() {
           <p className="px-6 py-8 text-center text-sm text-muted">Todavía no hay semestres.</p>
         ) : (
           <>
-            {/* Mobile: tarjetas apiladas — la tabla de 5 columnas no cabe sin scroll horizontal. */}
+            {/* Mobile: tarjetas apiladas — la tabla de 6 columnas no cabe sin scroll horizontal. */}
             <div className="divide-y divide-muted/10 md:hidden">
               {semestres.map((semestre: Semestre) => (
                 <div key={semestre.id} className="flex items-center justify-between gap-3 px-6 py-3.5">
@@ -134,7 +158,7 @@ export function SemestresPage() {
                       </span>
                     </div>
                     <div className="mt-0.5 text-xs text-muted">
-                      {semestre.fecha_inicio} – {semestre.fecha_fin}
+                      {semestre.fecha_inicio} – {semestre.fecha_fin} · {semestre.horas_meta} h
                     </div>
                   </div>
                   <button
@@ -161,6 +185,9 @@ export function SemestresPage() {
                     Fin
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    Meta
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
                     Estado
                   </th>
                   <th className="px-6 py-3" />
@@ -172,6 +199,7 @@ export function SemestresPage() {
                     <td className="px-6 py-3.5 text-sm font-medium text-ink">{semestre.nombre}</td>
                     <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_inicio}</td>
                     <td className="px-6 py-3.5 text-sm text-muted">{semestre.fecha_fin}</td>
+                    <td className="px-6 py-3.5 text-sm text-muted">{semestre.horas_meta} h</td>
                     <td className="px-6 py-3.5">
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${

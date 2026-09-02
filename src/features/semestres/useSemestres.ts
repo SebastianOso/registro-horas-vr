@@ -8,6 +8,7 @@ interface CrearSemestreInput {
   nombre: string
   fecha_inicio: string
   fecha_fin: string
+  horas_meta: number
 }
 
 interface UseSemestresResult {
