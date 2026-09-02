@@ -27,7 +27,7 @@ becario ──< inscripciones >── semestre
 - **Los turnos que cruzan medianoche no son representables** (la resta de `time` no lo permite).
   Es una decisión aceptada porque el laboratorio de VR cierra de noche. Si algún día se necesita
   un turno nocturno, es un cambio de tipo de columna (`time` → `timestamptz`) y de la constraint,
-  no un parche puntual — escalarlo al orquestador, no improvisar una excepción.
+  no un parche puntual — consultarlo antes, no improvisar una excepción.
 - `minutos` es una columna generada (`stored`) a partir de `hora_fin - hora_inicio`. **Nunca la
   calcules de nuevo en el cliente ni la mandes en el insert** — si el cliente y la base calculan
   distinto, quedan datos inconsistentes. Léela, no la reproduzcas.
@@ -46,7 +46,7 @@ cada pantalla que lo muestre.
 Campos esperados de esa vista, como mínimo: `inscripcion_id`, `becario_id`, `semestre_id`,
 `minutos_acumulados`, `horas_meta`, `horas_faltantes`, `porcentaje`.
 
-## Qué revisar en una PR (para `revisor-pr`)
+## Qué revisar en una PR
 
 1. ¿Algún insert/update a `registros` referencia `becario_id` en vez de `inscripcion_id`? →
    hallazgo de gravedad alta.

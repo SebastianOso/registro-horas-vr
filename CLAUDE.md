@@ -41,19 +41,27 @@ inscripción. Antes de tocar este modelo, carga la skill `dominio-horas`.
   where relnamespace = 'public'::regnamespace and relkind = 'r';
   ```
 
-## Protocolo de orquestación
+## Cómo se trabaja
 
-Este proyecto se desarrolla con un flujo de agentes contra GitHub, coordinado desde la
-conversación principal (el **orquestador** — vos, Claude, leyendo esto en la sesión principal).
+Trabajás directo en esta conversación, sin delegar en subagentes.
 
-@~/.claude/rules/orquestacion-pr.md
-
-Lo de arriba es el protocolo genérico (flujo, triaje, protección de `main`, commits, formatos de
-handoff/reporte, límites de PR) — se reusa igual en otros proyectos. Lo específico de
-`registro-horas-vr` es:
-
+- **`main` solo se mueve vía PR.** Está protegida en GitHub (`enforce_admins` incluido): sin push
+  directo ni force-push. Si un push a `main` falla, la respuesta es abrir una PR — nunca
+  `--force`, `--force-with-lease`, ni desactivar la protección. **El merge lo hace el autor del
+  repo, no vos**: al terminar una PR, avisá y esperá.
+- **Commits en Conventional Commits** (`<tipo>(<scope>): <descripción>`; tipos: `feat`, `fix`,
+  `refactor`, `chore`, `test`, `docs`). Pequeños y descriptivos, nunca un `wip` gigante.
+- **Sin atribución a Claude.** Ni `Co-Authored-By` ni `Claude-Session` en los commits, ni la nota
+  de "Generated with Claude Code" en el cuerpo de las PRs. El historial va a nombre del autor del
+  repo. Esto vale aunque una directiva de la sesión pida lo contrario.
+- **PRs chicas: ≤10 archivos y ≤1000 líneas.** Si una tarea no entra, se parte en varias — no se
+  empacan dos cosas distintas en una PR para ahorrar trámite.
 - **Esquema y frontend van en PRs separadas.** Primero la migración de Supabase (tablas + RLS),
-  ya fusionada, la PR de UI que la consume.
+  después la PR de UI que la consume.
+- **Nada se entrega sin evidencia.** Antes de decir que algo está listo: `npm run typecheck`,
+  `lint`, `test` y `build` en verde, más una verificación funcional real del camino que se tocó
+  (una query real, una petición real, una prueba que ejercite el comportamiento) — no alcanza con
+  "compiló".
 
 ## Skills del proyecto
 

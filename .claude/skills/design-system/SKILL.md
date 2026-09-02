@@ -44,7 +44,7 @@ Familias de tokens que debe tener:
 - Tablas de datos (la vista de avance del coordinador): encabezado con `--color-muted` sobre
   `--color-surface`, sin bordes de color fuera de los tokens.
 
-## Qué revisar en una PR (para `revisor-pr`)
+## Qué revisar en una PR
 
 1. ¿Aparece algún className de color que no sea un token de `@theme`? → hallazgo de gravedad
    media (aunque no rompa nada visualmente si Tailwind simplemente no genera la clase, el
